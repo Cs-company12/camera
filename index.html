@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPhone ClearVision Camera</title>
+
+<style>
+body {
+  background: #111;
+  text-align: center;
+  color: white;
+  font-family: Arial;
+}
+video, canvas {
+  width: 90%;
+  max-width: 380px;
+  margin-top: 20px;
+  border-radius: 14px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>ClearVision Camera</h2>
+<p>Camera filter active — see-through enhancement</p>
+
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
+
+<script>
+async function startCam() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "environment" }
+  });
+  document.getElementById("video").srcObject = stream;
+}
+startCam();
+
+function enhance() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  // iPhone friendly filter (Safari compatible)
+  ctx.filter = 
+    "contrast(220%) brightness(140%) saturate(130%) sharpness(180%)";
+
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  requestAnimationFrame(enhance);
+}
+enhance();
+</script>
+
+</body>
+</html>
