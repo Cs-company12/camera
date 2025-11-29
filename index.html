@@ -2,28 +2,28 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iPhone ClearVision Camera</title>
+<title>ClearVision PRO Camera</title>
 
 <style>
 body {
-  background: #111;
+  background: #000;
   text-align: center;
   color: white;
   font-family: Arial;
 }
 video, canvas {
-  width: 90%;
-  max-width: 380px;
+  width: 92%;
+  max-width: 400px;
   margin-top: 20px;
-  border-radius: 14px;
+  border-radius: 16px;
 }
 </style>
 
 </head>
 <body>
 
-<h2>ClearVision Camera</h2>
-<p>Camera filter active — see-through enhancement</p>
+<h2>ClearVision PRO</h2>
+<p>Super Enhanced See-Through Filter</p>
 
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
@@ -38,18 +38,29 @@ async function startCam() {
 startCam();
 
 function enhance() {
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+  const v = document.getElementById("video");
+  const c = document.getElementById("canvas");
+  const ctx = c.getContext("2d");
 
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  c.width = v.videoWidth;
+  c.height = v.videoHeight;
 
-  // iPhone friendly filter (Safari compatible)
-  ctx.filter = 
-    "contrast(220%) brightness(140%) saturate(130%) sharpness(180%)";
+  // Super-enhanced filter
+  ctx.filter =
+    "contrast(320%) brightness(160%) saturate(180%) blur(1px) " +
+    "drop-shadow(0 0 3px white)";
 
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(v, 0, 0, c.width, c.height);
+
+  // Extra clarity
+  let img = ctx.getImageData(0, 0, c.width, c.height);
+  let data = img.data;
+  for (let i = 0; i < data.length; i += 4) {
+    data[i]     = data[i] * 1.15; // Red enhance
+    data[i + 1] = data[i + 1] * 1.10; // Green enhance
+    data[i + 2] = data[i + 2] * 1.18; // Blue enhance
+  }
+  ctx.putImageData(img, 0, 0);
 
   requestAnimationFrame(enhance);
 }
